@@ -225,3 +225,208 @@ Ready
 
 
 </div>
+
+<script src="core/engine.js"></script>
+<script src="core/pipeline.js"></script>
+
+<script src="modules/unicode.js"></script>
+<script src="modules/base64.js"></script>
+<script src="modules/invisible.js"></script>
+<script src="modules/zalgo.js"></script>
+<script src="modules/strike.js"></script>
+<script src="modules/ant.js"></script>
+<script src="modules/fonts.js"></script>
+
+
+<script>
+
+
+// ===============================
+// Encoder v0.7 Controller
+// ===============================
+
+
+let currentMode = "secret";
+
+
+
+
+// Select mode
+
+function setMode(mode){
+
+    currentMode = mode;
+
+    document.getElementById("status")
+    .innerText =
+    "Mode: " + mode;
+
+}
+
+
+
+
+// Encode
+
+async function generate(){
+
+
+    let text =
+    document.getElementById("input")
+    .value;
+
+
+
+    if(!text){
+
+        status("Please enter text");
+
+        return;
+
+    }
+
+
+
+    let recipe =
+    Pipeline.get(currentMode);
+
+
+
+    try{
+
+
+        let result =
+        await engine.encode(
+            text,
+            recipe
+        );
+
+
+
+        document.getElementById("output")
+        .value=result;
+
+
+
+        status(
+        "Generated using: "
+        + currentMode
+        );
+
+
+    }
+
+
+    catch(error){
+
+        status(error.message);
+
+    }
+
+
+}
+
+
+
+
+
+
+
+// Decode
+
+async function decode(){
+
+
+    let text =
+    document.getElementById("input")
+    .value;
+
+
+
+    let recipe =
+    Pipeline.get(currentMode);
+
+
+
+    try{
+
+
+        let result =
+        await engine.decode(
+            text,
+            recipe
+        );
+
+
+
+        document.getElementById("output")
+        .value=result;
+
+
+
+        status(
+        "Decoded"
+        );
+
+
+    }
+
+
+    catch(error){
+
+        status(error.message);
+
+    }
+
+
+}
+
+
+
+
+
+
+
+
+// Copy output
+
+function copyOutput(){
+
+
+    let output =
+    document.getElementById("output");
+
+
+    navigator.clipboard.writeText(
+        output.value
+    );
+
+
+    status(
+    "Copied"
+    );
+
+
+}
+
+
+
+
+
+
+
+function status(text){
+
+    document.getElementById("status")
+    .innerText=text;
+
+}
+
+
+
+</script>
+
+
+</body>
+
+</html>
